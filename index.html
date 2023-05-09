@@ -11,9 +11,10 @@
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.0.3/chroma.min.js"></script>
-    
-    <script type="text/javascript" src="http://www.larsko.org/v/d3.min.js"></script>
-    <script type="text/javascript" src="http://www.larsko.org/v/hpi/chernoff.js"></script>
+        
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 
     <style>
         body,
@@ -36,10 +37,6 @@
             font-family: Arial, Helvetica, sans-serif;
             text-shadow: 2px 2px #000000;
             font-weight: normal;
-        }
-
-        .face {
-            background-color: white;
         }
     </style>
 
@@ -96,7 +93,7 @@
         });
 
         var imdLayer = L.layerGroup().addTo(map);
-        var facesLayer = L.layerGroup().addTo(map);
+        var facesLayer = L.markerClusterGroup({disableClusteringAtZoom: 14, spiderfyOnMaxZoom: false}).addTo(map);
 
         var overlayMaps = {
             "NZIMD 2018": imdLayer,
@@ -110,14 +107,28 @@
         var NZIMD_cmap = chroma.scale("BuPu").domain([1, 6181])
 
         var customLayer = L.geoJson(null, {
-            interactive: false,
             onEachFeature: function (feature, layer) {
                 console.log(feature)
-                var icon = L.divIcon({
-                    className: "face",
+                var p = feature.properties;
+                var desc = `Datazone: <b>${p.DZ2018}</b><hr>
+                            IMD Rank: ${p.IMD18}<br>
+                            Access rank: ${p.Access}<br>
+                            Crime rank: ${p.Crime}<br>
+                            Education rank: ${p.Education}<br>
+                            Employment rank: ${p.Employment}<br>
+                            Health rank: ${p.Health}<br>
+                            Housing rank: ${p.Housing}<br>
+                            Income rank: ${p.Income}<br>
+                            DHB: ${p.dhb2015__2}<br>
+                            GED: ${p.ged2020n_2}<br>
+                            TA: ${p.ta2020na_1}`;
+                layer.bindPopup(desc)
+                var icon = L.icon({
+                    className: 'face',
+                    iconUrl: `https://picsum.photos/seed/${p.DZ2018}/20/20`,
                     iconSize: [20, 20]
                 });
-                L.marker(layer.getBounds().getCenter(), {icon: icon}).addTo(facesLayer)
+                L.marker(layer.getBounds().getCenter(), {icon: icon}).addTo(facesLayer).bindTooltip(desc)
             },
             style: function (feature) {
                 return {
