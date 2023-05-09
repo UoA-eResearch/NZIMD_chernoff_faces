@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chernoff faces</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <script type="text/javascript" src="d3.min.js"></script>
+        <script type="text/javascript" src="chernoff.js"></script>
+        <style type="text/css">
+.chernoff > * {
+    fill: none;
+    stroke: #000;
+}
+        </style>
+    </head>
+
+    <body>
+        <div id="face"></div>
+        <script type="text/javascript">
+        (function () {
+        var c = d3.chernoff()
+            .face(function(d) { return d.f; })
+            .hair(function(d) { return d.h; })
+            .mouth(function(d) { return d.m; })
+            .nosew(function(d) { return d.nw; })
+            .noseh(function(d) { return d.nh; })
+            .eyew(function(d) { return d.ew; })
+            .eyeh(function(d) { return d.eh; })
+            .brow(function(d) { return d.b; });
+
+        var svg = d3.select("#face").append("svg:svg")
+                .attr("height", 500).attr("width", 500),
+            dat = [
+                {f: 0, h: -1, m: -1, nw: 0.3, nh: 0.3, ew: 0.3, eh: 0.3, b: -1},
+                {f: 0.5, h: 0, m: 0, nw: 0.3, nh: 1, ew: 1, eh: 0.3, b: 0},
+                {f: 1, h: 1, m: 1, nw: 1, nh: 0.3, ew: 0.3, eh: 1, b: 1}];
+
+        svg.selectAll("g.chernoff").data(dat).enter()
+            .append("svg:g")
+            .attr("class", "chernoff")
+            .attr("transform", function(d, i) {
+                return "scale(1." + i + ")translate(" +
+                    (i*100) + "," + (i*100) + ")";
+            })
+            .call(c);
+        })();
+        </script>
+    </body>
+</html>
