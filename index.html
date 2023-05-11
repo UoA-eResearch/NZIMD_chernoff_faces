@@ -125,8 +125,8 @@
                 layer.bindPopup(desc)
                 var icon = L.icon({
                     className: 'face',
-                    iconUrl: `https://picsum.photos/seed/${p.DZ2018}/20/20`,
-                    iconSize: [20, 20]
+                    iconUrl: `faces/${p.DZ2018}.png`,
+                    iconSize: [100, 100]
                 });
                 L.marker(layer.getBounds().getCenter(), {icon: icon}).addTo(facesLayer).bindTooltip(desc)
             },
