@@ -12,6 +12,8 @@
     <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.0.3/chroma.min.js"></script>
 
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
@@ -157,7 +159,8 @@
                     iconUrl: `faces/${p.DZ2018}.png`,
                     iconSize: [100, 100]
                 });
-                L.marker(layer.getBounds().getCenter(), { icon: icon }).addTo(facesLayer).bindTooltip(desc)
+                var center = turf.centerOfMass(feature).geometry.coordinates.reverse();
+                L.marker(center, { icon: icon }).addTo(facesLayer).bindTooltip(desc)
             },
             style: function (feature) {
                 return {
